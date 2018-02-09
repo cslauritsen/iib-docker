@@ -19,17 +19,17 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Install IIB V10 Developer edition
+# Why download every time?
+#curl http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/integration/10.0.0.11-IIB-LINUX64-DEVELOPER.tar.gz \
+# gzip -dc ~/Downloads/10.0.0.11-IIB-LINUX64-DEVELOPER.tar.gz \
 RUN mkdir /opt/ibm && \
-    curl http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/integration/10.0.0.11-IIB-LINUX64-DEVELOPER.tar.gz \
-    | tar zx --exclude iib-10.0.0.11/tools --directory /opt/ibm && \
+    | tar zxf ~/Downloads/10.0.0.11-IIB-LINUX64-DEVELOPER.tar.gz --exclude iib-10.0.0.11/tools --directory /opt/ibm && \
     /opt/ibm/iib-10.0.0.11/iib make registry global accept license silently
 
 # Configure system
 RUN echo "IIB_10:" > /etc/debian_chroot  && \
     touch /var/log/syslog && \
     chown syslog:adm /var/log/syslog
-
-
 
 # Create user to run as
 RUN useradd --create-home --home-dir /home/iibuser -G mqbrkrs,sudo iibuser && \
